@@ -1,0 +1,11 @@
+{
+  "name": "quantised-mesh-decoder",
+  "version": "1.0.0",
+  "description": "decoder for the quantized-mesh-1.0 terrain format",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
