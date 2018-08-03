@@ -64,8 +64,9 @@ function decodeHeader (dataView) {
 
 function decodeVertexData (dataView, headerEndPosition) {
   let position = headerEndPosition
-  const vertexData = []
+  const elementsPerVertex = 3
   const vertexCount = dataView.getUint32(position, true)
+  const vertexData = new Uint16Array(vertexCount * elementsPerVertex)
 
   position += Uint32Array.BYTES_PER_ELEMENT
 
@@ -84,7 +85,9 @@ function decodeVertexData (dataView, headerEndPosition) {
     v += decodeZigZag(dataView.getUint16(vArrayStartPosition + bytesPerArrayElement * i, true))
     height += decodeZigZag(dataView.getUint16(heightArrayStartPosition + bytesPerArrayElement * i, true))
 
-    vertexData.push({ u, v, height })
+    vertexData[i] = u
+    vertexData[i + vertexCount] = v
+    vertexData[i + vertexCount * 2] = height
   }
 
   position += elementArrayLength * 3
@@ -242,13 +245,24 @@ export default function decode (data) {
   const view = new DataView(data)
   const { header, headerEndPosition } = decodeHeader(view)
   const { vertexData, vertexDataEndPosition } = decodeVertexData(view, headerEndPosition)
-  const { triangleIndices, indicesEndPosition } = decodeIndices(view, vertexData.length, vertexDataEndPosition)
+  const {
+    triangleIndices,
+    indicesEndPosition,
+    westIndices,
+    southIndices,
+    eastIndices,
+    northIndices
+  } = decodeIndices(view, vertexData.length, vertexDataEndPosition)
   const { extensions } = decodeExtensions(view, indicesEndPosition)
 
   return {
     header,
     vertexData,
     triangleIndices,
+    westIndices,
+    northIndices,
+    eastIndices,
+    southIndices,
     extensions
   }
 }

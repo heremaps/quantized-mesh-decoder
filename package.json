@@ -1,11 +1,14 @@
 {
-  "name": "quantised-mesh-decoder",
-  "version": "1.0.0",
+  "name": "@here/quantized-mesh-decoder",
+  "version": "1.0.2",
   "description": "decoder for the quantized-mesh-1.0 terrain format",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC"
+  "license": "MIT",
+  "author": {
+    "name": "HERE Global B.V. and its affiliate(s)",
+    "url": "https://here.com"
+  }
 }

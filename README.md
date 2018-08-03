@@ -1,12 +1,13 @@
-Quantised-mesh decoder
+Quantized-mesh decoder
 ===========================================
 
 - Format specification: https://github.com/AnalyticalGraphicsInc/quantized-mesh
 - Works both client-side and node.js
 
 - Example:
+
 ```javascript
-import decodeQuantisedMesh from 'quantised-mesh-decoder'
+import decode from 'quantized-mesh-decoder'
 
 const tileUrl = 'http://assets.agi.com/stk-terrain/world/tiles/0/0/0.terrain'
 window.fetch(tileUrl, {
@@ -16,11 +17,13 @@ window.fetch(tileUrl, {
 })
   .then(res => {
     if (res.status !== 200) {
-      throw new Error(`Unable to load tile ${ url }`)
+      throw new Error(`Unable to load tile ${ tileUrl }`)
     }
 
-    const buffer = res.arrayBuffer()
-    const decodedTile = decodeQuantisedMesh(buffer)
+    return res.arrayBuffer()
+  })
+  .then(buffer => {
+    const decodedTile = decode(buffer)
     console.log(decodedTile)
   })
 ```
