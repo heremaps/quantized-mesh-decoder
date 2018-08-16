@@ -24,7 +24,7 @@ function signNotZero (vector) {
   return new THREE.Vector2(
     vector.x >= 0 ? 1 : -1,
     vector.y >= 0 ? 1 : -1
-    )
+  )
 }
 
 function decodeOct (encodedVector) {
@@ -34,7 +34,7 @@ function decodeOct (encodedVector) {
     decodedVector.x,
     decodedVector.y,
     1 - Math.abs(decodedVector.x) - Math.abs(decodedVector.y)
-    )
+  )
 
   if (decodedVector.z < 0) {
     const xy = new THREE.Vector2(decodedVector.x, decodedVector.y)
@@ -95,13 +95,17 @@ function decodeVertexData (dataView, headerEndPosition) {
   return { vertexData, vertexDataEndPosition: position }
 }
 
-function decodeIndex (buffer, position, indicesCount, bytesPerIndex) {
+function decodeIndex (buffer, position, indicesCount, bytesPerIndex, encoded = true) {
   let indices
 
   if (bytesPerIndex === 2) {
     indices = new Uint16Array(buffer, position, indicesCount)
   } else {
     indices = new Uint32Array(buffer, position, indicesCount)
+  }
+
+  if (!encoded) {
+    return indices
   }
 
   let highest = 0
@@ -122,8 +126,8 @@ function decodeIndex (buffer, position, indicesCount, bytesPerIndex) {
 function decodeIndices (dataView, vertexCount, vertexDataEndPosition) {
   let position = vertexDataEndPosition
   const bytesPerIndex = vertexCount > 65536
-  ? Uint32Array.BYTES_PER_ELEMENT
-  : Uint16Array.BYTES_PER_ELEMENT
+    ? Uint32Array.BYTES_PER_ELEMENT
+    : Uint16Array.BYTES_PER_ELEMENT
 
   if (position % bytesPerIndex !== 0) {
     position += bytesPerIndex - (position % bytesPerIndex)
@@ -138,31 +142,31 @@ function decodeIndices (dataView, vertexCount, vertexDataEndPosition) {
     position,
     triangleIndicesCount,
     bytesPerIndex
-    )
+  )
   position += triangleIndicesCount * bytesPerIndex
 
   const westVertexCount = dataView.getUint32(position, true)
   position += Uint32Array.BYTES_PER_ELEMENT
 
-  const westIndices = decodeIndex(dataView.buffer, position, westVertexCount, bytesPerIndex)
+  const westIndices = decodeIndex(dataView.buffer, position, westVertexCount, bytesPerIndex, false)
   position += westVertexCount * bytesPerIndex
 
   const southVertexCount = dataView.getUint32(position, true)
   position += Uint32Array.BYTES_PER_ELEMENT
 
-  const southIndices = decodeIndex(dataView.buffer, position, southVertexCount, bytesPerIndex)
+  const southIndices = decodeIndex(dataView.buffer, position, southVertexCount, bytesPerIndex, false)
   position += southVertexCount * bytesPerIndex
 
   const eastVertexCount = dataView.getUint32(position, true)
   position += Uint32Array.BYTES_PER_ELEMENT
 
-  const eastIndices = decodeIndex(dataView.buffer, position, eastVertexCount, bytesPerIndex)
+  const eastIndices = decodeIndex(dataView.buffer, position, eastVertexCount, bytesPerIndex, false)
   position += eastVertexCount * bytesPerIndex
 
   const northVertexCount = dataView.getUint32(position, true)
   position += Uint32Array.BYTES_PER_ELEMENT
 
-  const northIndices = decodeIndex(dataView.buffer, position, northVertexCount, bytesPerIndex)
+  const northIndices = decodeIndex(dataView.buffer, position, northVertexCount, bytesPerIndex, false)
   position += northVertexCount * bytesPerIndex
 
   return {
@@ -182,7 +186,7 @@ function decodeVertexNormalsExtension (extensionDataView) {
     const decodedNormal = decodeOct(new THREE.Vector2(
       extensionDataView.getUint8(position, true),
       extensionDataView.getUint8(position + Uint8Array.BYTES_PER_ELEMENT, true)
-      ))
+    ))
 
     normals.push({
       x: decodedNormal.x,
@@ -198,7 +202,7 @@ function decodeWaterMaskExtension (extensionDataView) {
   return extensionDataView.buffer.slice(
     extensionDataView.byteOffset,
     extensionDataView.byteOffset + extensionDataView.byteLength
-    )
+  )
 }
 
 function decodeExtensions (dataView, indicesEndPosition) {
