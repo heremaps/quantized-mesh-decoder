@@ -123,7 +123,7 @@ function decodeIndex (buffer, position, indicesCount, bytesPerIndex, encoded = t
   return indices
 }
 
-function decodeIndices (dataView, vertexCount, vertexDataEndPosition) {
+function decodeTriangleIndices (dataView, vertexCount, vertexDataEndPosition) {
   let position = vertexDataEndPosition
   const bytesPerIndex = vertexCount > 65536
     ? Uint32Array.BYTES_PER_ELEMENT
@@ -144,6 +144,18 @@ function decodeIndices (dataView, vertexCount, vertexDataEndPosition) {
     bytesPerIndex
   )
   position += triangleIndicesCount * bytesPerIndex
+
+  return {
+    triangleIndicesEndPosition: position,
+    triangleIndices
+  }
+}
+
+function decodeEdgeIndices (dataView, vertexCount, triangleIndicesEndPosition) {
+  let position = triangleIndicesEndPosition
+  const bytesPerIndex = vertexCount > 65536
+    ? Uint32Array.BYTES_PER_ELEMENT
+    : Uint16Array.BYTES_PER_ELEMENT
 
   const westVertexCount = dataView.getUint32(position, true)
   position += Uint32Array.BYTES_PER_ELEMENT
@@ -170,8 +182,7 @@ function decodeIndices (dataView, vertexCount, vertexDataEndPosition) {
   position += northVertexCount * bytesPerIndex
 
   return {
-    indicesEndPosition: position,
-    triangleIndices,
+    edgeIndicesEndPosition: position,
     westIndices,
     southIndices,
     eastIndices,
@@ -245,19 +256,63 @@ function decodeExtensions (dataView, indicesEndPosition) {
   return { extensions, extensionsEndPosition: position }
 }
 
-export default function decode (data) {
+export const DECODING_STEPS = {
+  header: 0,
+  vertices: 1,
+  triangleIndices: 2,
+  edgeIndices: 3,
+  extensions: 4
+}
+
+const DEFAULT_OPTIONS = {
+  maxDecodingStep: DECODING_STEPS.extensions
+}
+
+export default function decode (data, userOptions) {
+  const options = Object.assign({}, DEFAULT_OPTIONS, userOptions)
   const view = new DataView(data)
   const { header, headerEndPosition } = decodeHeader(view)
+
+  if (options.maxDecodingStep < DECODING_STEPS.vertices) {
+    return { header }
+  }
+
   const { vertexData, vertexDataEndPosition } = decodeVertexData(view, headerEndPosition)
+
+  if (options.maxDecodingStep < DECODING_STEPS.triangleIndices) {
+    return { header, vertexData }
+  }
+
   const {
     triangleIndices,
-    indicesEndPosition,
+    triangleIndicesEndPosition
+  } = decodeTriangleIndices(view, vertexData.length, vertexDataEndPosition)
+
+  if (options.maxDecodingStep < DECODING_STEPS.edgeIndices) {
+    return { header, vertexData, triangleIndices }
+  }
+
+  const {
     westIndices,
     southIndices,
     eastIndices,
-    northIndices
-  } = decodeIndices(view, vertexData.length, vertexDataEndPosition)
-  const { extensions } = decodeExtensions(view, indicesEndPosition)
+    northIndices,
+    edgeIndicesEndPosition
+  } = decodeEdgeIndices(view, vertexData.length, triangleIndicesEndPosition)
+
+  if (options.maxDecodingStep < DECODING_STEPS.extensions) {
+    return {
+      header,
+      vertexData,
+      triangleIndices,
+      westIndices,
+      northIndices,
+      eastIndices,
+      southIndices
+    }
+  }
+
+  const { extensions } = decodeExtensions(view, edgeIndicesEndPosition)
 
   return {
     header,
