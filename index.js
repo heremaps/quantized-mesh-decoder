@@ -123,8 +123,10 @@ function decodeIndex (buffer, position, indicesCount, bytesPerIndex, encoded = t
   return indices
 }
 
-function decodeTriangleIndices (dataView, vertexCount, vertexDataEndPosition) {
+function decodeTriangleIndices (dataView, vertexData, vertexDataEndPosition) {
   let position = vertexDataEndPosition
+  const elementsPerVertex = 3
+  const vertexCount = vertexData.length / elementsPerVertex
   const bytesPerIndex = vertexCount > 65536
     ? Uint32Array.BYTES_PER_ELEMENT
     : Uint16Array.BYTES_PER_ELEMENT
@@ -151,8 +153,10 @@ function decodeTriangleIndices (dataView, vertexCount, vertexDataEndPosition) {
   }
 }
 
-function decodeEdgeIndices (dataView, vertexCount, triangleIndicesEndPosition) {
+function decodeEdgeIndices (dataView, vertexData, triangleIndicesEndPosition) {
   let position = triangleIndicesEndPosition
+  const elementsPerVertex = 3
+  const vertexCount = vertexData.length / elementsPerVertex
   const bytesPerIndex = vertexCount > 65536
     ? Uint32Array.BYTES_PER_ELEMENT
     : Uint16Array.BYTES_PER_ELEMENT
@@ -286,7 +290,7 @@ export default function decode (data, userOptions) {
   const {
     triangleIndices,
     triangleIndicesEndPosition
-  } = decodeTriangleIndices(view, vertexData.length, vertexDataEndPosition)
+  } = decodeTriangleIndices(view, vertexData, vertexDataEndPosition)
 
   if (options.maxDecodingStep < DECODING_STEPS.edgeIndices) {
     return { header, vertexData, triangleIndices }
@@ -298,7 +302,7 @@ export default function decode (data, userOptions) {
     eastIndices,
     northIndices,
     edgeIndicesEndPosition
-  } = decodeEdgeIndices(view, vertexData.length, triangleIndicesEndPosition)
+  } = decodeEdgeIndices(view, vertexData, triangleIndicesEndPosition)
 
   if (options.maxDecodingStep < DECODING_STEPS.extensions) {
     return {
