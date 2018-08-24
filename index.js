@@ -20,34 +20,6 @@ function decodeZigZag (value) {
   return (value >> 1) ^ (-(value & 1))
 }
 
-function signNotZero (vector) {
-  return new THREE.Vector2(
-    vector.x >= 0 ? 1 : -1,
-    vector.y >= 0 ? 1 : -1
-  )
-}
-
-function decodeOct (encodedVector) {
-  let decodedVector = encodedVector.divideScalar(255).multiplyScalar(2).subScalar(1)
-
-  decodedVector = new THREE.Vector3(
-    decodedVector.x,
-    decodedVector.y,
-    1 - Math.abs(decodedVector.x) - Math.abs(decodedVector.y)
-  )
-
-  if (decodedVector.z < 0) {
-    const xy = new THREE.Vector2(decodedVector.x, decodedVector.y)
-    const xyAbs = xy.distanceTo(new THREE.Vector2(0, 0))
-    const xySign = signNotZero(xy)
-    const decodedXy = xySign.multiplyScalar(1 - xyAbs)
-
-    decodedVector.set(decodedXy.x, decodedXy.y, decodedVector.z)
-  }
-
-  return decodedVector.normalize()
-}
-
 function decodeHeader (dataView) {
   let position = 0
   const header = {}
@@ -195,22 +167,10 @@ function decodeEdgeIndices (dataView, vertexData, triangleIndicesEndPosition) {
 }
 
 function decodeVertexNormalsExtension (extensionDataView) {
-  const normals = []
-
-  for (let position = 0; position < extensionDataView.byteLength; position += Uint8Array.BYTES_PER_ELEMENT * 2) {
-    const decodedNormal = decodeOct(new THREE.Vector2(
-      extensionDataView.getUint8(position, true),
-      extensionDataView.getUint8(position + Uint8Array.BYTES_PER_ELEMENT, true)
-    ))
-
-    normals.push({
-      x: decodedNormal.x,
-      y: decodedNormal.y,
-      z: decodedNormal.z
-    })
-  }
-
-  return normals
+  return extensionDataView.buffer.slice(
+    extensionDataView.byteOffset,
+    extensionDataView.byteOffset + extensionDataView.byteLength
+  )
 }
 
 function decodeWaterMaskExtension (extensionDataView) {
@@ -250,7 +210,7 @@ function decodeExtensions (dataView, indicesEndPosition) {
         break
       }
       default: {
-        console.warn(`Unknown extension with id ${ extensionId }`)
+        console.warn(`Unknown extension with id ${extensionId}`)
       }
     }
 
