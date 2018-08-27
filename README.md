@@ -1,29 +1,35 @@
-Quantized-mesh decoder
+Quantized Mesh Decoder
 ===========================================
 
-- Format specification: https://github.com/AnalyticalGraphicsInc/quantized-mesh
-- Works both client-side and node.js
+JavaScript decoder for the [Quantized Mesh format](https://github.com/AnalyticalGraphicsInc/quantized-mesh).
 
-- Example:
+```
+npm i heremaps/quantized-mesh-decoder
+```
+
+
+
+### API Reference
 
 ```javascript
-import decode from 'quantized-mesh-decoder'
+import decode from '@here/quantized-mesh-decoder'
 
-const tileUrl = 'http://assets.agi.com/stk-terrain/world/tiles/0/0/0.terrain'
-window.fetch(tileUrl, {
-  headers: {
-    'Accept': 'application/vnd.quantized-mesh,application/octet-stream;q=0.9'
-  }
-})
-  .then(res => {
-    if (res.status !== 200) {
-      throw new Error(`Unable to load tile ${ tileUrl }`)
-    }
-
-    return res.arrayBuffer()
-  })
-  .then(buffer => {
-    const decodedTile = decode(buffer)
-    console.log(decodedTile)
-  })
+decode(buffer, options)
 ```
+
+* buffer: [ArrayBuffer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer)
+* options: [DecoderOptions](#decoderoptions)
+
+##### DecoderOptions
+
+* maxDecodingStep: Number  
+  Limits how deep decoder should go.  Takes of the properties of the `DECODING_STEPS` map. See `import { DECODING_STEPS } from '@here/quantized-mesh-decoder' `.   
+  Default: `DECODING_STEPS.extensions`.
+
+
+
+### Links
+
+* [Quantized Mesh Specification](https://github.com/AnalyticalGraphicsInc/quantized-mesh)
+* [Quantized Mesh Viewer](https://github.com/heremaps/quantized-mesh-viewer)
+* [OpenTIN](https://github.com/heremaps/open-tin) — tool to generate Quantized Mesh tiles out of GeoTIFF
