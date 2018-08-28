@@ -35,4 +35,4 @@ decode(buffer, options)
 
 - Two tiles are used for testing purposes
   - `src/assets/tile-with-extensions.terrain`: CesiumIon at https://cesiumjs.org/Cesium/Build/Apps/Sandcastle/index.html?src=Terrain.html
-  - `src/assets/tile-opentin.terrain`: Open data from brazilian government [IBGE](https://ww2.ibge.gov.br/english/) at `ftp://geoftp.ibge.gov.br//modelos_digitais_de_superficie/modelo_digital_de_elevacao_mde/rj25/tif/mde_27453ne_v1.zip` processed using [OpenTIN](#links)
+  - `src/assets/tile-opentin.terrain`: Open data from brazilian government [IBGE](https://ww2.ibge.gov.br/english/) at `ftp://geoftp.ibge.gov.br//modelos_digitais_de_superficie/modelo_digital_de_elevacao_mde/rj25/tif/mde_27453ne_v1.zip` processed using [OpenTIN](https://github.com/heremaps/open-tin)
