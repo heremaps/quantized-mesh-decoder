@@ -2,6 +2,11 @@
 
 import assert from 'assert'
 import decode from './'
+import {
+  groundTruthTriangles,
+  createTriangle,
+  compareTriangles
+} from './test-utils'
 
 describe('Decoded tile', function () {
   const HEADERS = [
@@ -36,14 +41,14 @@ describe('Decoded tile', function () {
   const TileEncoderLog = {
     QuantizedMeshHeader_start: 0,
     VertexData_vertexCount_start: 88,
-    VertexData_vertexCount: 189,
+    VertexData_vertexCount: 4,
     VertexData_u_start: 92,
-    VertexData_v_start: 470,
-    VertexData_height_start: 848,
+    VertexData_v_start: 100,
+    VertexData_height_start: 108,
     IndexData_bits: 16,
-    IndexData_triangleCount_start: 1226,
-    IndexData_triangleCount: 337,
-    IndexData_indices_start: 1230
+    IndexData_triangleCount_start: 116,
+    IndexData_triangleCount: 2,
+    IndexData_indices_start: 120
   }
 
   it('should contain all fields', function () {
@@ -88,10 +93,23 @@ describe('Decoded tile', function () {
       })
       .then(buffer => {
         const decodedTile = decode(buffer)
+
         assert.strictEqual(
           decodedTile.triangleIndices.length, TileEncoderLog.IndexData_triangleCount * 3)
         assert.strictEqual(
           decodedTile.vertexData.length, TileEncoderLog.VertexData_vertexCount * 3)
+
+        for (let i = 0; i < TileEncoderLog.IndexData_triangleCount; i++) {
+          const triangle = createTriangle(
+            [
+              decodedTile.triangleIndices[i * 3],
+              decodedTile.triangleIndices[i * 3 + 1],
+              decodedTile.triangleIndices[i * 3 + 2]
+            ],
+            decodedTile.vertexData
+          )
+          compareTriangles(triangle, groundTruthTriangles[i])
+        }
       })
   })
 })
