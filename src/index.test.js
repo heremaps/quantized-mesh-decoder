@@ -5,7 +5,8 @@ import decode from './'
 import {
   groundTruthTriangles,
   createTriangle,
-  compareTriangles
+  compareTriangles,
+  fetchTile
 } from './test-utils'
 
 describe('Decoded tile', function () {
@@ -53,18 +54,7 @@ describe('Decoded tile', function () {
 
   it('should contain all fields', function () {
     const tileUrl = '/base/src/assets/tile-with-extensions.terrain'
-    return window.fetch(tileUrl, {
-      headers: {
-        'Accept': 'application/vnd.quantized-mesh,application/octet-stream;q=0.9'
-      }
-    })
-      .then(res => {
-        if (res.status !== 200) {
-          throw new Error(`Unable to load tile ${tileUrl}`)
-        }
-
-        return res.arrayBuffer()
-      })
+    return fetchTile(tileUrl)
       .then(buffer => {
         const decodedTile = decode(buffer)
         assert(decodedTile.header instanceof Object)
@@ -79,18 +69,7 @@ describe('Decoded tile', function () {
 
   it('should have correct numbers', function () {
     const tileUrl = '/base/src/assets/tile-opentin.terrain'
-    return window.fetch(tileUrl, {
-      headers: {
-        'Accept': 'application/vnd.quantized-mesh,application/octet-stream;q=0.9'
-      }
-    })
-      .then(res => {
-        if (res.status !== 200) {
-          throw new Error(`Unable to load tile ${tileUrl}`)
-        }
-
-        return res.arrayBuffer()
-      })
+    return fetchTile(tileUrl)
       .then(buffer => {
         const decodedTile = decode(buffer)
 

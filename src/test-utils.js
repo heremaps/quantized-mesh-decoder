@@ -44,3 +44,18 @@ export function compareTriangles (t1, t2) {
     }
   }
 }
+
+export function fetchTile (url) {
+  return window.fetch(url, {
+    headers: {
+      'Accept': 'application/vnd.quantized-mesh,application/octet-stream;q=0.9'
+    }
+  })
+    .then(res => {
+      if (res.status !== 200) {
+        throw new Error(`Unable to load tile ${url}`)
+      }
+
+      return res.arrayBuffer()
+    })
+}
