@@ -12,6 +12,17 @@
     "name": "HERE Global B.V. and its affiliate(s)",
     "url": "https://here.com"
   },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:heremaps/quantized-mesh-decoder.git"
+  },
+  "bugs": "https://github.com/heremaps/quantized-mesh-decoder/issues",
+  "keywords": [
+    "HERE",
+    "HERE technologies",
+    "Quantized Mesh",
+    "Decoder"
+  ],
   "devDependencies": {
     "assert": "^1.4.1",
     "karma": "^3.0.0",
