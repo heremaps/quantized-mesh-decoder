@@ -7,8 +7,6 @@ JavaScript decoder for the [Quantized Mesh format](https://github.com/Analytical
 npm i heremaps/quantized-mesh-decoder
 ```
 
-
-
 ### API Reference
 
 ```javascript
@@ -27,9 +25,14 @@ decode(buffer, options)
   Default: `DECODING_STEPS.extensions`.
 
 
-
 ### Links
 
 * [Quantized Mesh Specification](https://github.com/AnalyticalGraphicsInc/quantized-mesh)
 * [Quantized Mesh Viewer](https://github.com/heremaps/quantized-mesh-viewer)
 * [OpenTIN](https://github.com/heremaps/open-tin) — tool to generate Quantized Mesh tiles out of GeoTIFF
+
+### Tiles attribution
+
+- Two tiles are used for testing purposes
+  - `src/assets/tile-with-extensions.terrain`: CesiumIon at https://cesiumjs.org/Cesium/Build/Apps/Sandcastle/index.html?src=Terrain.html
+  - `src/assets/tile-opentin.terrain`: Open data from brazilian government [IBGE](https://ww2.ibge.gov.br/english/) at `ftp://geoftp.ibge.gov.br//modelos_digitais_de_superficie/modelo_digital_de_elevacao_mde/rj25/tif/mde_27453ne_v1.zip` processed using [OpenTIN](https://github.com/heremaps/open-tin)
