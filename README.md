@@ -3,6 +3,8 @@ Quantized Mesh Decoder
 
 JavaScript decoder for the [Quantized Mesh format](https://github.com/AnalyticalGraphicsInc/quantized-mesh).
 
+Note: This is experimental code, expect changes. 
+
 ```
 npm i heremaps/quantized-mesh-decoder
 ```
@@ -36,3 +38,11 @@ decode(buffer, options)
 - Two tiles are used for testing purposes
   - `src/assets/tile-with-extensions.terrain`: CesiumIon at https://cesiumjs.org/Cesium/Build/Apps/Sandcastle/index.html?src=Terrain.html
   - `src/assets/tile-opentin.terrain`: Open data from brazilian government [IBGE](https://ww2.ibge.gov.br/english/) at `ftp://geoftp.ibge.gov.br//modelos_digitais_de_superficie/modelo_digital_de_elevacao_mde/rj25/tif/mde_27453ne_v1.zip` processed using [OpenTIN](https://github.com/heremaps/open-tin)
+
+
+
+### License
+
+Copyright (C) 2018 HERE Europe B.V.
+
+See the [LICENSE](LICENSE) file in the root of this project for license details.
