@@ -64,7 +64,7 @@ function decodeVertexData (dataView, headerEndPosition) {
 
   position += elementArrayLength * 3
 
-  return { vertexData, vertexDataEndPosition: position }
+  return { vertexCount, vertexData, vertexDataEndPosition: position }
 }
 
 function decodeIndex (buffer, position, indicesCount, bytesPerIndex, encoded = true) {
@@ -166,11 +166,9 @@ function decodeEdgeIndices (dataView, vertexData, triangleIndicesEndPosition) {
   }
 }
 
-function decodeVertexNormalsExtension (extensionDataView) {
-  return extensionDataView.buffer.slice(
-    extensionDataView.byteOffset,
-    extensionDataView.byteOffset + extensionDataView.byteLength
-  )
+function decodeVertexNormalsExtension (extensionDataView, vertexCount) {
+  let { buffer, byteOffset } = extensionDataView
+  return new Uint8Array(buffer, byteOffset, vertexCount * 2)
 }
 
 function decodeWaterMaskExtension (extensionDataView) {
@@ -180,7 +178,7 @@ function decodeWaterMaskExtension (extensionDataView) {
   )
 }
 
-function decodeExtensions (dataView, indicesEndPosition) {
+function decodeExtensions (dataView, indicesEndPosition, vertexCount) {
   const extensions = {}
 
   if (dataView.byteLength <= indicesEndPosition) {
@@ -200,7 +198,7 @@ function decodeExtensions (dataView, indicesEndPosition) {
 
     switch (extensionId) {
       case 1: {
-        extensions.vertexNormals = decodeVertexNormalsExtension(extensionView)
+        extensions.vertexNormals = decodeVertexNormalsExtension(extensionView, vertexCount)
 
         break
       }
@@ -241,7 +239,7 @@ export default function decode (data, userOptions) {
     return { header }
   }
 
-  const { vertexData, vertexDataEndPosition } = decodeVertexData(view, headerEndPosition)
+  const { vertexCount, vertexData, vertexDataEndPosition } = decodeVertexData(view, headerEndPosition)
 
   if (options.maxDecodingStep < DECODING_STEPS.triangleIndices) {
     return { header, vertexData }
@@ -276,7 +274,7 @@ export default function decode (data, userOptions) {
     }
   }
 
-  const { extensions } = decodeExtensions(view, edgeIndicesEndPosition)
+  const { extensions } = decodeExtensions(view, edgeIndicesEndPosition, vertexCount)
 
   return {
     header,
