@@ -63,7 +63,10 @@ describe('Decoded tile', function () {
         assert(decodedTile.vertexData instanceof Uint16Array)
         assert(decodedTile.extensions instanceof Object)
         EXTENSIONS.forEach(extension =>
-          assert(decodedTile.extensions[extension] instanceof ArrayBuffer))
+          extension === 'vertexNormals'
+            ? assert(decodedTile.extensions[extension] instanceof Uint8Array)
+            : assert(decodedTile.extensions[extension] instanceof ArrayBuffer)
+        )
       })
   })
 
