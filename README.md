@@ -31,7 +31,7 @@ decode(buffer, options)
 
 * [Quantized Mesh Specification](https://github.com/AnalyticalGraphicsInc/quantized-mesh)
 * [Quantized Mesh Viewer](https://github.com/heremaps/quantized-mesh-viewer)
-* [OpenTIN](https://github.com/heremaps/open-tin) — tool that generates Quantized Mesh tiles out of GeoTIFF
+* [TIN Terrain](https://github.com/heremaps/tin-terrain) — tool that generates Quantized Mesh tiles out of GeoTIFF
 
 ### Sample Tiles Attribution
 
