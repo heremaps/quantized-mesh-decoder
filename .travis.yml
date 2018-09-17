@@ -1,3 +1,11 @@
 language: node_js
 node_js:
   - "lts/*"
+dist: trusty
+
+# config from https://developers.google.com/web/updates/2017/06/headless-karma-mocha-chai
+# Note: if you switch to sudo: false, you'll need to launch Chrome with --no-sandbox.
+# See https://github.com/travis-ci/travis-ci/issues/8836
+sudo: required
+addons:
+  chrome: stable # have Travis install Chrome stable.
