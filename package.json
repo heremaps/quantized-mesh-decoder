@@ -1,10 +1,9 @@
 {
   "name": "@here/quantized-mesh-decoder",
   "version": "1.1.2",
-  "description": "decoder for the quantized-mesh-1.0 terrain format",
+  "description": "Decoder for the Quantized Mesh 1.0 format",
   "main": "src/index.js",
   "scripts": {
-    "start": "karma start",
     "test": "karma start --single-run && standard"
   },
   "license": "MIT",
