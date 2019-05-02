@@ -5,8 +5,18 @@ JavaScript decoder for the [Quantized Mesh format](https://github.com/Analytical
 
 Note: This is experimental code, expect changes. 
 
+## Installation
+
+### In Node.js
+
+The module is installable via yarn (or npm):
+
+```sh
+yarn add @here/quantized-mesh-decoder
 ```
-npm i heremaps/quantized-mesh-decoder
+
+```sh
+npm install @here/quantized-mesh-decoder
 ```
 
 ### API Reference
@@ -40,6 +50,6 @@ decode(buffer, options)
 
 ### License
 
-Copyright © 2018 HERE Europe B.V.
+Copyright (C) 2018-2019 HERE Europe B.V.
 
 See the [LICENSE](LICENSE) file in the root of this project for license details.
