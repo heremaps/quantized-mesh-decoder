@@ -35,7 +35,8 @@ describe('Decoded tile', function () {
 
   const EXTENSIONS = [
     'vertexNormals',
-    'waterMask'
+    'waterMask',
+    'metadata'
   ]
 
   // copied from writerLog using OpenTIN (https://github.com/heremaps/open-tin) to generate tiles
@@ -52,7 +53,17 @@ describe('Decoded tile', function () {
     IndexData_indices_start: 120
   }
 
-  it('should contain all fields', function () {
+  it('should contain metadata extension', function () {
+    const tileUrl = '/base/src/assets/tile-with-metadata-extension.terrain'
+    return fetchTile(tileUrl)
+      .then(buffer => {
+        const decodedTile = decode(buffer)
+
+        assert(decodedTile.extensions.metadata instanceof Object)
+      })
+  })
+
+  it('should contain all fields, except metadata extension', function () {
     const tileUrl = '/base/src/assets/tile-with-extensions.terrain'
     return fetchTile(tileUrl)
       .then(buffer => {
@@ -62,11 +73,18 @@ describe('Decoded tile', function () {
         INDICES.forEach(indice => assert(decodedTile[indice] instanceof Uint16Array))
         assert(decodedTile.vertexData instanceof Uint16Array)
         assert(decodedTile.extensions instanceof Object)
-        EXTENSIONS.forEach(extension =>
-          extension === 'vertexNormals'
-            ? assert(decodedTile.extensions[extension] instanceof Uint8Array)
-            : assert(decodedTile.extensions[extension] instanceof ArrayBuffer)
-        )
+        EXTENSIONS.forEach(extension => {
+          switch (extension) {
+            case 'vertexNormals': {
+              assert(decodedTile.extensions[extension] instanceof Uint8Array)
+              break
+            }
+            case 'waterMask': {
+              assert(decodedTile.extensions[extension] instanceof ArrayBuffer)
+              break
+            }
+          }
+        })
       })
   })
 
