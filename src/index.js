@@ -179,6 +179,17 @@ function decodeWaterMaskExtension (extensionDataView) {
   )
 }
 
+function decodeMetadataExtension (extensionDataView) {
+  const jsonLength = extensionDataView.getUint32(0, true)
+
+  let jsonString = ''
+  for (let i = 0; i < jsonLength; ++i) {
+    jsonString += String.fromCharCode(extensionDataView.getUint8(Uint32Array.BYTES_PER_ELEMENT + i))
+  }
+
+  return JSON.parse(jsonString)
+}
+
 function decodeExtensions (dataView, indicesEndPosition) {
   const extensions = {}
 
@@ -205,6 +216,11 @@ function decodeExtensions (dataView, indicesEndPosition) {
       }
       case 2: {
         extensions.waterMask = decodeWaterMaskExtension(extensionView)
+
+        break
+      }
+      case 4: {
+        extensions.metadata = decodeMetadataExtension(extensionView)
 
         break
       }
