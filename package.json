@@ -1,6 +1,6 @@
 {
   "name": "@here/quantized-mesh-decoder",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "Decoder for the Quantized Mesh 1.0 format",
   "main": "dist/quantized-mesh-decoder.js",
   "unpkg": "dist/quantized-mesh-decoder.min.js",
