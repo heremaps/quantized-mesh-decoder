@@ -24,8 +24,8 @@ set -ex
 
 echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ~/.npmrc
 
-yarn install
-yarn build
+npm install
+npm run build
 
 npm publish
 

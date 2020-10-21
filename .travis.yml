@@ -9,8 +9,8 @@ jobs:
   include:
     - name: "Build & Test"
       script:
-        - yarn run build
-        - yarn test --browser ChromeHeadless
+        - npm run build
+        - npm test --browser ChromeHeadless
       deploy:
         - provider: script
           script: ./publish-npm.sh
